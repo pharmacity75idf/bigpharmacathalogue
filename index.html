@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pharmacity — Catalogue</title>
+<style>
+:root{--navy:#002855;--navy2:#003f88;--green:#ff6b1a;--green2:#ff9a3c;--gold:#00b4d8;--gold2:#48cae4;--cream:#fff7ed;--muted:#5a6478;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--cream);color:#1a1a2e}
+
+/* NAV */
+header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.nav{max-width:1380px;margin:0 auto;padding:0 2rem;height:68px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#6a1b9a,#ab47bc 55%,#ce93d8);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(171,71,188,.45),inset 0 1px 0 rgba(255,255,255,.25)}
+.logo-icon svg{width:32px;height:32px;display:block}
+.logo-text{font-size:1.5rem;font-weight:800;color:#fff;letter-spacing:-.3px}
+.logo-text span{color:var(--gold2)}
+.logo-sub{font-size:.62rem;color:#8899bb;font-weight:500;letter-spacing:.12em;text-transform:uppercase;display:block;margin-top:-3px}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{color:#aab8cc;text-decoration:none;font-size:.87rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--gold2)}
+.badge-legal{background:rgba(42,125,79,.2);border:1px solid rgba(42,125,79,.4);color:#6dd99a;font-size:.72rem;font-weight:600;padding:.28rem .8rem;border-radius:99px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#001d3d 0%,#003f88 45%,#0077b6 100%);padding:6rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 30%,rgba(255,107,26,.35) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 70%,rgba(72,202,228,.25) 0%,transparent 65%),radial-gradient(circle at 50% 100%,rgba(255,154,60,.2) 0%,transparent 50%)}
+.hero-label{display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold2);font-size:.78rem;font-weight:600;padding:.38rem 1rem;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:1.1rem}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:#8899bb;font-size:1rem;max-width:500px;margin:0 auto 2.2rem;line-height:1.7;font-weight:300}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
+.stat-num{font-size:1.9rem;font-weight:900;color:#fff}.stat-num span{color:var(--gold2)}
+.stat-label{font-size:.72rem;color:#7a8899;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem}
+
+/* MARQUEE */
+.marquee-wrap{background:var(--green);overflow:hidden;padding:.65rem 0}
+.marquee{display:flex;gap:2.5rem;animation:marquee 28s linear infinite;width:max-content}
+.marquee span{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.marquee span::before{content:'✦ ';color:var(--gold2)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* FILTERS */
+.filter-bar{max-width:1380px;margin:0 auto;padding:2.2rem 2rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.filter-bar h2{font-size:1.45rem;font-weight:800;color:var(--navy)}
+.filters{display:flex;gap:.45rem;flex-wrap:wrap}
+.fb{border:1.5px solid #d0d8e0;background:#fff;color:#555;padding:.45rem 1.1rem;border-radius:99px;cursor:pointer;font-size:.82rem;font-weight:600;transition:all .2s}
+.fb:hover{border-color:var(--green);color:var(--green)}
+.fb.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* GRID */
+.grid{max-width:1380px;margin:0 auto;padding:1.2rem 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;cursor:pointer;position:relative}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+.card:hover .ov{opacity:1}
+.img-wrap{position:relative;height:200px;overflow:hidden;flex-shrink:0}
+.img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.card:hover .img-wrap img{transform:scale(1.06)}
+.img-wrap.pill img{object-fit:contain;padding:1.2rem}
+.card:hover .img-wrap.pill img{transform:scale(1.08)}
+.ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,22,40,.7) 0%,transparent 60%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:1rem}
+.ov button{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer}
+.type-badge{position:absolute;top:10px;left:10px;z-index:2;font-size:.67rem;font-weight:700;padding:.25rem .65rem;border-radius:99px;text-transform:uppercase;letter-spacing:.07em;backdrop-filter:blur(8px)}
+.t-indoor{background:rgba(11,22,40,.75);color:#90c4ff;border:1px solid rgba(144,196,255,.3)}
+.t-greenhouse{background:rgba(11,22,40,.75);color:#90ddb0;border:1px solid rgba(144,221,176,.3)}
+.t-outdoor{background:rgba(11,22,40,.75);color:#ffd080;border:1px solid rgba(255,208,128,.3)}
+.t-resine{background:rgba(11,22,40,.75);color:#e0a0ff;border:1px solid rgba(224,160,255,.3)}
+.t-moonrock{background:rgba(11,22,40,.75);color:#ff9898;border:1px solid rgba(255,152,152,.3)}
+.t-ecaille{background:rgba(11,22,40,.75);color:#ffc4d8;border:1px solid rgba(255,196,216,.3)}
+.t-psy{background:rgba(74,0,128,.85);color:#cc99ff;border:1px solid rgba(180,100,255,.4)}
+.flag{position:absolute;top:10px;right:10px;z-index:2;font-size:.64rem;font-weight:800;padding:.25rem .62rem;border-radius:99px;text-transform:uppercase;letter-spacing:.06em}
+.f-new{background:#e63946;color:#fff}.f-top{background:var(--gold);color:var(--navy)}.f-bio{background:#2a7d4f;color:#fff}.f-promo{background:#ff6b35;color:#fff}
+.card-body{padding:1rem 1.1rem .7rem;flex:1;display:flex;flex-direction:column;gap:.35rem}
+.card-name{font-size:1.08rem;font-weight:800;color:var(--navy);line-height:1.2}
+.card-desc{font-size:.81rem;color:var(--muted);line-height:1.5;flex:1}
+.card-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.3rem}
+.tag{background:#f0f4f8;color:#4a6080;font-size:.69rem;font-weight:600;padding:.18rem .55rem;border-radius:6px}
+.card-foot{padding:.8rem 1.1rem 1rem;border-top:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between}
+.price{font-size:1.25rem;font-weight:900;color:var(--navy)}.price span{font-size:.76rem;font-weight:400;color:var(--muted)}
+.price-old{font-size:.75rem;color:#bbb;text-decoration:line-through;display:block}
+.btn-detail{background:transparent;border:1.5px solid var(--green);color:var(--green);border-radius:8px;padding:.48rem 1rem;font-size:.79rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-detail:hover{background:var(--green);color:#fff}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;z-index:1000;background:rgba(5,12,28,.72);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:600px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:fadeUp .28s ease}
+@keyframes fadeUp{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.modal img{width:100%;height:240px;object-fit:cover}
+.modal-body{padding:1.6rem}
+.modal-type{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.4rem}
+.modal-name{font-size:1.7rem;font-weight:900;color:var(--navy);margin-bottom:.65rem}
+.modal-desc{font-size:.9rem;color:#555;line-height:1.7;margin-bottom:1.1rem}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.3rem}
+.mi{background:#f7f8fa;border-radius:9px;padding:.75rem .9rem}
+.mi-l{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.mi-v{font-size:.95rem;font-weight:700;color:var(--navy);margin-top:.15rem}
+.modal-close{width:100%;padding:.82rem;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s}
+.modal-close:hover{background:var(--navy2)}
+
+/* CONTACT SECTION */
+.contact{background:linear-gradient(135deg,#ff6b1a 0%,#ff9a3c 50%,#003f88 100%);padding:4rem 2rem;position:relative;overflow:hidden}
+.contact::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(255,255,255,.15) 0%,transparent 50%),radial-gradient(circle at 80% 50%,rgba(0,180,216,.2) 0%,transparent 60%)}
+.contact-in{max-width:1100px;margin:0 auto;text-align:center;position:relative}
+.contact h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:.6rem;text-shadow:0 2px 20px rgba(0,0,0,.2)}
+.contact p{color:rgba(255,255,255,.92);font-size:1rem;margin-bottom:2rem;font-weight:500}
+.contact-row{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap}
+.contact-card{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:18px;padding:1.4rem 2rem;display:flex;align-items:center;gap:1rem;text-decoration:none;color:var(--navy);transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.18);min-width:280px}
+.contact-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+.cc-icon{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;color:#fff}
+.cc-wa{background:linear-gradient(135deg,#25d366,#128c7e)}
+.cc-snap{background:linear-gradient(135deg,#fffc00,#ffd400);color:#000}
+.cc-tg{background:linear-gradient(135deg,#29b6f6,#0088cc)}
+.cc-text{text-align:left}
+.cc-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.15rem}
+.cc-value{font-size:1.15rem;font-weight:800;color:var(--navy)}
+
+/* FLOATING WHATSAPP */
+.fab-wa{position:fixed;bottom:24px;right:24px;width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.85rem;text-decoration:none;box-shadow:0 8px 24px rgba(37,211,102,.5),0 0 0 0 rgba(37,211,102,.6);z-index:500;animation:pulse 2.4s infinite;transition:transform .25s}
+.fab-wa:hover{transform:scale(1.1)}
+@keyframes pulse{0%{box-shadow:0 8px 24px rgba(37,211,102,.5),0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 8px 24px rgba(37,211,102,.5),0 0 0 18px rgba(37,211,102,0)}100%{box-shadow:0 8px 24px rgba(37,211,102,.5),0 0 0 0 rgba(37,211,102,0)}}
+/* FLOATING SNAPCHAT */
+.fab-snap{position:fixed;bottom:98px;right:24px;width:62px;height:62px;border-radius:50%;background:#fffc00;display:flex;align-items:center;justify-content:center;font-size:1.85rem;text-decoration:none;box-shadow:0 8px 24px rgba(255,252,0,.5),0 0 0 0 rgba(255,252,0,.6);z-index:500;animation:pulseSnap 2.4s infinite;transition:transform .25s}
+.fab-snap:hover{transform:scale(1.1)}
+@keyframes pulseSnap{0%{box-shadow:0 8px 24px rgba(255,252,0,.5),0 0 0 0 rgba(255,252,0,.55)}70%{box-shadow:0 8px 24px rgba(255,252,0,.5),0 0 0 18px rgba(255,252,0,0)}100%{box-shadow:0 8px 24px rgba(255,252,0,.5),0 0 0 0 rgba(255,252,0,0)}}
+/* FLOATING TELEGRAM */
+.fab-tg{position:fixed;bottom:172px;right:24px;width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#29b6f6,#0088cc);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.85rem;text-decoration:none;box-shadow:0 8px 24px rgba(0,136,204,.5),0 0 0 0 rgba(0,136,204,.6);z-index:500;animation:pulseTg 2.4s infinite;transition:transform .25s}
+.fab-tg:hover{transform:scale(1.1)}
+@keyframes pulseTg{0%{box-shadow:0 8px 24px rgba(0,136,204,.5),0 0 0 0 rgba(0,136,204,.55)}70%{box-shadow:0 8px 24px rgba(0,136,204,.5),0 0 0 18px rgba(0,136,204,0)}100%{box-shadow:0 8px 24px rgba(0,136,204,.5),0 0 0 0 rgba(0,136,204,0)}}
+
+/* FOOTER */
+footer{background:var(--navy);padding:2.5rem 2rem}
+.footer-in{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem}
+.ft-logo{font-size:1.3rem;font-weight:800;color:#fff}.ft-logo span{color:var(--gold2)}
+.ft-p{color:#7a8899;font-size:.83rem;line-height:1.7;margin-top:.7rem;max-width:270px}
+.ft-col h4{color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem}
+.ft-col a{display:block;color:#7a8899;text-decoration:none;font-size:.83rem;margin-bottom:.45rem;transition:color .2s}
+.ft-col a:hover{color:var(--gold2)}
+.footer-bot{max-width:1380px;margin:1.8rem auto 0;padding-top:1.3rem;border-top:1px solid rgba(255,255,255,.08);color:#4a5a6a;font-size:.76rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem}
+@media(max-width:768px){.nav-links{display:none}.footer-in{grid-template-columns:1fr}}
+@media(max-width:500px){.grid{padding:1rem;gap:1rem}.filter-bar{padding:1.5rem 1rem .5rem}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="#">
+      <div class="logo-icon" aria-label="Pharmacity logo">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#fff" opacity=".95">
+            <rect x="27" y="6" width="10" height="52" rx="2"/>
+            <rect x="6" y="27" width="52" height="10" rx="2"/>
+          </g>
+          <g transform="translate(32 32)">
+            <g fill="#1b5e20" stroke="#0d3a12" stroke-width=".6" stroke-linejoin="round">
+              <path d="M0,-22 C-1.2,-14 -2,-9 -3,-5 C-7,-9 -10,-12 -13,-15 C-12,-10 -11,-6 -10,-2 C-14,-3 -17,-4 -21,-5 C-17,-1 -14,2 -11,5 C-15,5 -18,5 -22,5 C-18,8 -14,10 -10,12 C-13,13 -16,14 -19,15 C-14,16 -10,16 -6,16 C-7,18 -8,20 -9,22 C-5,21 -3,19 -1,17 C-0.5,19 -0.2,21 0,22 C0.2,21 0.5,19 1,17 C3,19 5,21 9,22 C8,20 7,18 6,16 C10,16 14,16 19,15 C16,14 13,13 10,12 C14,10 18,8 22,5 C18,5 15,5 11,5 C14,2 17,-1 21,-5 C17,-4 14,-3 10,-2 C11,-6 12,-10 13,-15 C10,-12 7,-9 3,-5 C2,-9 1.2,-14 0,-22 Z"/>
+            </g>
+          </g>
+          <g transform="translate(48 49) rotate(38)">
+            <rect x="-8" y="-3.5" width="16" height="7" rx="3.5" fill="#ffebee"/>
+            <rect x="-8" y="-3.5" width="8" height="7" fill="#e53935"/>
+            <rect x="-8" y="-3.5" width="16" height="7" rx="3.5" fill="none" stroke="#4a148c" stroke-width=".7" opacity=".55"/>
+          </g>
+          <g fill="#fff">
+            <circle cx="11" cy="51" r="1.6"/>
+            <circle cx="15" cy="55" r="1.1"/>
+            <circle cx="8" cy="55" r="1.3"/>
+            <circle cx="13" cy="48" r=".8"/>
+            <circle cx="18" cy="52" r=".7"/>
+            <circle cx="6" cy="51" r=".9"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Pharma<span>city</span></div>
+        <span class="logo-sub">Catalogue de variétés</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Fleurs</a></li>
+      <li><a href="#">Pollen</a></li>
+      <li><a href="#">Comprimés</a></li>
+      <li><a href="#">Écailles</a></li>
+    </ul>
+    <span class="badge-legal">✓ Site de consultation</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">🌿 Sélection Premium 2026</div>
+  <h1>La <em>pharmacie</em> de référence</h1>
+  <p>Site de consultation uniquement.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Fleurs</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Pollens</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Comprimés</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Écailles</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Psy</div></div>
+  </div>
+</section>
+
+<div class="marquee-wrap"><div class="marquee" id="mq"></div></div>
+
+<div class="filter-bar">
+  <h2>Notre catalogue</h2>
+  <div class="filters" id="filters"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="modal-bg" id="mbg" onclick="closeMod(event)">
+  <div class="modal" id="mod">
+    <img id="mimg" src="" alt=""/>
+    <div class="modal-body">
+      <div class="modal-type" id="mtype"></div>
+      <div class="modal-name" id="mname"></div>
+      <div class="modal-desc" id="mdesc"></div>
+      <div class="modal-grid" id="mgrid"></div>
+      <button class="modal-close" onclick="document.getElementById('mbg').classList.remove('open')">Fermer la fiche</button>
+    </div>
+  </div>
+</div>
+
+<section class="contact">
+  <div class="contact-in">
+    <h2>📞 Une question ? Contactez-nous</h2>
+    <p>Notre équipe vous répond rapidement pour toute information sur le catalogue</p>
+    <div class="contact-row">
+      <a class="contact-card" href="https://wa.me/33754006744" target="_blank" rel="noopener">
+        <div class="cc-icon cc-wa">💬</div>
+        <div class="cc-text">
+          <div class="cc-label">WhatsApp</div>
+          <div class="cc-value">07 54 00 67 44</div>
+        </div>
+      </a>
+      <a class="contact-card" href="https://snapchat.com/add/pharmacity75idf" target="_blank" rel="noopener">
+        <div class="cc-icon cc-snap">👻</div>
+        <div class="cc-text">
+          <div class="cc-label">Snapchat</div>
+          <div class="cc-value">pharmacity75idf</div>
+        </div>
+      </a>
+      <a class="contact-card" href="https://t.me/+qp9JqnAGf0A2NTE0" target="_blank" rel="noopener">
+        <div class="cc-icon cc-tg">✈️</div>
+        <div class="cc-text">
+          <div class="cc-label">Telegram</div>
+          <div class="cc-value">Rejoindre le canal</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<a class="fab-tg" href="https://t.me/+qp9JqnAGf0A2NTE0" target="_blank" rel="noopener" aria-label="Telegram">✈️</a>
+<a class="fab-snap" href="https://www.snapchat.com/add/pharmacity75idf" target="_blank" rel="noopener" aria-label="Snapchat">👻</a>
+<a class="fab-wa" href="https://wa.me/33754006744" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+
+<footer>
+  <div class="footer-in">
+    <div>
+      <div class="ft-logo">Pharma<span>city</span></div>
+      <p class="ft-p">Catalogue de référence de toutes les variétés. Sélection rigoureuse, description précise, prix transparent. Pharmacity, la pharmacie de référence.</p>
+    </div>
+    <div class="ft-col">
+      <h4>Catalogue</h4>
+      <a href="#">Fleurs</a><a href="#">Pollen</a><a href="#">Comprimés</a><a href="#">Écailles</a>
+    </div>
+    <div class="ft-col">
+      <h4>Contact</h4>
+      <a href="https://wa.me/33754006744" target="_blank">💬 WhatsApp · 07 54 00 67 44</a>
+      <a href="https://snapchat.com/add/pharmacity75idf" target="_blank">👻 Snap · pharmacity75idf</a>
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <span>© 2024 Pharmacity — Catalogue de consultation uniquement</span>
+    <span>Site à caractère informatif</span>
+  </div>
+</footer>
+
+<script>
+// Génère un dessin SVG de comprimé (tablette) avec la couleur souhaitée
+function pillImg(color, dark){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'><defs><radialGradient id='hl' cx='40%' cy='30%' r='70%'><stop offset='0%' stop-color='white' stop-opacity='0.7'/><stop offset='60%' stop-color='white' stop-opacity='0.1'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient><filter id='sh'><feGaussianBlur stdDeviation='4'/></filter></defs><ellipse cx='205' cy='130' rx='148' ry='62' fill='rgba(0,0,0,0.25)' filter='url(%23sh)'/><ellipse cx='200' cy='115' rx='150' ry='68' fill='${color}'/><ellipse cx='200' cy='115' rx='150' ry='68' fill='url(%23hl)'/><line x1='55' y1='115' x2='345' y2='115' stroke='${dark}' stroke-width='3' stroke-linecap='round' opacity='0.35'/></svg>`;
+  return 'data:image/svg+xml;utf8,'+svg.replace(/"/g,"'").replace(/#/g,'%23');
+}
+
+// Génère un SVG de barre de chocolat avec 6 carrés sur fond violet
+function chocoBarImg(){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'>
+  <defs>
+    <linearGradient id='vbg' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='%234a0080'/>
+      <stop offset='100%' stop-color='%23200040'/>
+    </linearGradient>
+    <linearGradient id='choc' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='%23522000'/>
+      <stop offset='100%' stop-color='%232d0f00'/>
+    </linearGradient>
+    <linearGradient id='choclight' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='%23703010'/>
+      <stop offset='100%' stop-color='%23401800'/>
+    </linearGradient>
+    <radialGradient id='sqshine' cx='30%' cy='25%' r='65%'>
+      <stop offset='0%' stop-color='%23ffffff' stop-opacity='0.18'/>
+      <stop offset='100%' stop-color='%23ffffff' stop-opacity='0'/>
+    </radialGradient>
+    <filter id='barshadow'><feGaussianBlur stdDeviation='7'/></filter>
+  </defs>
+  <!-- fond violet -->
+  <rect width='400' height='260' fill='url(%23vbg)'/>
+  <!-- reflet fond -->
+  <ellipse cx='200' cy='130' rx='190' ry='110' fill='%236a00b0' opacity='0.3'/>
+  <!-- ombre barre -->
+  <rect x='58' y='52' width='300' height='185' rx='12' fill='%23000000' opacity='0.45' filter='url(%23barshadow)'/>
+  <!-- corps barre chocolat -->
+  <rect x='50' y='38' width='300' height='185' rx='12' fill='url(%23choc)'/>
+  <!-- bord supérieur plus clair -->
+  <rect x='50' y='38' width='300' height='12' rx='12' fill='%23703010' opacity='0.7'/>
+  <!-- reflet global -->
+  <rect x='50' y='38' width='300' height='185' rx='12' fill='url(%23sqshine)'/>
+  <!-- séparateurs verticaux -->
+  <line x1='150' y1='46' x2='150' y2='215' stroke='%231a0800' stroke-width='4'/>
+  <line x1='251' y1='46' x2='251' y2='215' stroke='%231a0800' stroke-width='4'/>
+  <!-- séparateur horizontal -->
+  <line x1='58' y1='130' x2='342' y2='130' stroke='%231a0800' stroke-width='4'/>
+  <!-- carré 1,1 -->
+  <rect x='58' y='46' width='84' height='76' rx='5' fill='url(%23choclight)' opacity='0.6'/>
+  <rect x='58' y='46' width='84' height='76' rx='5' fill='url(%23sqshine)'/>
+  <!-- carré 1,2 -->
+  <rect x='159' y='46' width='84' height='76' rx='5' fill='url(%23choclight)' opacity='0.6'/>
+  <rect x='159' y='46' width='84' height='76' rx='5' fill='url(%23sqshine)'/>
+  <!-- carré 1,3 -->
+  <rect x='260' y='46' width='82' height='76' rx='5' fill='url(%23choclight)' opacity='0.6'/>
+  <rect x='260' y='46' width='82' height='76' rx='5' fill='url(%23sqshine)'/>
+  <!-- carré 2,1 -->
+  <rect x='58' y='138' width='84' height='77' rx='5' fill='url(%23choclight)' opacity='0.5'/>
+  <rect x='58' y='138' width='84' height='77' rx='5' fill='url(%23sqshine)'/>
+  <!-- carré 2,2 -->
+  <rect x='159' y='138' width='84' height='77' rx='5' fill='url(%23choclight)' opacity='0.5'/>
+  <rect x='159' y='138' width='84' height='77' rx='5' fill='url(%23sqshine)'/>
+  <!-- carré 2,3 -->
+  <rect x='260' y='138' width='82' height='77' rx='5' fill='url(%23choclight)' opacity='0.5'/>
+  <rect x='260' y='138' width='82' height='77' rx='5' fill='url(%23sqshine)'/>
+  <!-- reflet avant gauche -->
+  <rect x='50' y='38' width='8' height='185' rx='4' fill='%23ffffff' opacity='0.07'/>
+  <!-- étoiles décoratives violettes -->
+  <circle cx='30' cy='40' r='3' fill='%23cc66ff' opacity='0.7'/>
+  <circle cx='370' cy='220' r='4' fill='%23cc66ff' opacity='0.6'/>
+  <circle cx='20' cy='200' r='2' fill='%23ee88ff' opacity='0.5'/>
+  <circle cx='380' cy='50' r='2.5' fill='%23ee88ff' opacity='0.5'/>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+svg;
+}
+
+// Génère un SVG de poudre blanche brillante scintillante
+function hotPowderImg(){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'>
+  <defs>
+    <radialGradient id='hpbg' cx='50%' cy='55%' r='70%'>
+      <stop offset='0%' stop-color='%23ffffff'/>
+      <stop offset='60%' stop-color='%23e8eef5'/>
+      <stop offset='100%' stop-color='%23c8d8e8'/>
+    </radialGradient>
+    <radialGradient id='hpshine' cx='40%' cy='30%' r='60%'>
+      <stop offset='0%' stop-color='%23ffffff' stop-opacity='1'/>
+      <stop offset='50%' stop-color='%23f0f6ff' stop-opacity='0.8'/>
+      <stop offset='100%' stop-color='%23ffffff' stop-opacity='0'/>
+    </radialGradient>
+    <filter id='hpglow'><feGaussianBlur stdDeviation='3' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter>
+    <filter id='hpsoft'><feGaussianBlur stdDeviation='1.5'/></filter>
+  </defs>
+  <rect width='400' height='260' fill='%231a1a2e'/>
+  <ellipse cx='200' cy='230' rx='175' ry='18' fill='%230d0d1a' opacity='0.7'/>
+  <ellipse cx='200' cy='175' rx='165' ry='62' fill='url(%23hpbg)'/>
+  <path d='M70,175 Q130,110 200,88 Q270,110 330,175 Q270,185 200,188 Q130,185 70,175 Z' fill='%23ffffff' opacity='0.95'/>
+  <ellipse cx='200' cy='175' rx='165' ry='62' fill='url(%23hpshine)'/>
+  <ellipse cx='165' cy='128' rx='28' ry='10' fill='%23ffffff' opacity='0.9' filter='url(%23hpsoft)'/>
+  <ellipse cx='230' cy='138' rx='18' ry='7' fill='%23ffffff' opacity='0.7' filter='url(%23hpsoft)'/>
+  <g fill='%23ffffff' filter='url(%23hpglow)'>
+    <polygon points='200,72 202,80 210,80 204,85 206,93 200,88 194,93 196,85 190,80 198,80' opacity='0.95'/>
+    <polygon points='120,140 121.5,145 127,145 122.5,148 124,153 120,150 116,153 117.5,148 113,145 118.5,145' opacity='0.85'/>
+    <polygon points='285,130 286.5,135 292,135 287.5,138 289,143 285,140 281,143 282.5,138 278,135 283.5,135' opacity='0.85'/>
+    <polygon points='155,105 156,109 160,109 157,111 158,115 155,113 152,115 153,111 150,109 154,109' opacity='0.8'/>
+    <polygon points='248,108 249,112 253,112 250,114 251,118 248,116 245,118 246,114 243,112 247,112' opacity='0.8'/>
+    <polygon points='310,158 311,162 315,162 312,164 313,168 310,166 307,168 308,164 305,162 309,162' opacity='0.7'/>
+    <polygon points='90,160 91,164 95,164 92,166 93,170 90,168 87,170 88,166 85,164 89,164' opacity='0.7'/>
+  </g>
+  <g fill='%23c8e0ff' opacity='0.6'>
+    <circle cx='175' cy='155' r='2'/>
+    <circle cx='220' cy='148' r='1.5'/>
+    <circle cx='145' cy='168' r='2'/>
+    <circle cx='255' cy='160' r='1.5'/>
+    <circle cx='200' cy='178' r='2.5'/>
+    <circle cx='130' cy='158' r='1.5'/>
+    <circle cx='270' cy='152' r='2'/>
+    <circle cx='190' cy='142' r='1.5'/>
+    <circle cx='210' cy='165' r='1.5'/>
+    <circle cx='165' cy='172' r='2'/>
+    <circle cx='235' cy='170' r='1.5'/>
+  </g>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+svg;
+}
+
+// Génère un SVG réaliste d'un morceau de pollen/hash pressé
+function hashImg(c1, c2, dark, label){
+  const id = label.replace(/\s/g,'');
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'>
+  <defs>
+    <linearGradient id='hg${id}' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='${c1}'/>
+      <stop offset='100%' stop-color='${c2}'/>
+    </linearGradient>
+    <radialGradient id='hl${id}' cx='35%' cy='28%' r='65%'>
+      <stop offset='0%' stop-color='white' stop-opacity='0.45'/>
+      <stop offset='70%' stop-color='white' stop-opacity='0.05'/>
+      <stop offset='100%' stop-color='white' stop-opacity='0'/>
+    </radialGradient>
+    <filter id='sh${id}'><feGaussianBlur stdDeviation='6'/></filter>
+    <filter id='tx${id}'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' result='noise'/><feColorMatrix type='saturate' values='0' in='noise' result='gray'/><feBlend in='SourceGraphic' in2='gray' mode='multiply' result='blend'/><feComposite in='blend' in2='SourceGraphic' operator='in'/></filter>
+  </defs>
+  <!-- ombre portée -->
+  <ellipse cx='202' cy='218' rx='145' ry='22' fill='rgba(0,0,0,0.35)' filter='url(%23sh${id})'/>
+  <!-- bloc principal -->
+  <rect x='52' y='60' width='296' height='148' rx='18' ry='18' fill='url(%23hg${id})'/>
+  <!-- texture grain -->
+  <rect x='52' y='60' width='296' height='148' rx='18' ry='18' fill='${dark}' opacity='0.12' filter='url(%23tx${id})'/>
+  <!-- reflet supérieur -->
+  <rect x='52' y='60' width='296' height='148' rx='18' ry='18' fill='url(%23hl${id})'/>
+  <!-- lignes de pressage -->
+  <line x1='52' y1='108' x2='348' y2='108' stroke='${dark}' stroke-width='1.5' opacity='0.2'/>
+  <line x1='52' y1='134' x2='348' y2='134' stroke='${dark}' stroke-width='1.5' opacity='0.15'/>
+  <line x1='52' y1='160' x2='348' y2='160' stroke='${dark}' stroke-width='1.5' opacity='0.1'/>
+  <!-- arêtes latérales -->
+  <rect x='52' y='60' width='14' height='148' rx='0' fill='${dark}' opacity='0.15'/>
+  <rect x='334' y='60' width='14' height='148' rx='0' fill='${dark}' opacity='0.1'/>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+
+// Catalogue Pharmacity — Fleurs, Pollen, Comprimés, Écailles
+const PRODUCTS = [
+  // ═══ FLEURS (10) ═══
+  // OG Kush → bud dense vert avec pistils oranges, typique Indica Kush
+  {cat:'fleur',name:'OG Kush',flag:'top',flagTxt:'Top Shelf',
+    img:'https://images.pexels.com/photos/10729431/pexels-photo-10729431.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#1a3a2a,#3d6b4f)',
+    desc:"Notes terreuses et boisées, arômes de pin et de citron. Variété emblématique à la structure dense et résineuse.",
+    tags:['Indica dominante','Dense','Résineuse'],price:'8,50 €',
+    info:{Culture:'Indoor LED',Arômes:'Pin · Citron · Terre',Profil:'Indica dominante'},
+    modDesc:"Variété emblématique aux arômes complexes de pin, citron et terre humide. Sa structure dense et généreusement résineuse en fait une référence absolue."},
+  // Purple Haze → boutons violets/givré — image spécifiquement violette
+  {cat:'fleur',name:'Purple Haze',flag:'new',flagTxt:'Nouveau',
+    img:'https://images.pexels.com/photos/35483699/pexels-photo-35483699.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#2c1654,#7b2fff)',
+    desc:"Fleurs violettes spectaculaires aux arômes de baies sauvages et de raisin. Look givré exceptionnel.",
+    tags:['Sativa dominante','Fruité','Coloré'],price:'9,00 €',
+    info:{Culture:'Indoor LED',Arômes:'Raisin · Baies · Citrus',Profil:'Sativa dominante'},
+    modDesc:"Connue pour ses teintes violettes saisissantes, ses arômes de baies sauvages et raisins en font une variété très recherchée."},
+  // White Widow → ultra givrée, blanche, trichomes massifs
+  {cat:'fleur',name:'White Widow',flag:'top',flagTxt:'Best Seller',
+    img:'https://images.pexels.com/photos/33856592/pexels-photo-33856592.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#b8c6d1,#e7edf0)',
+    desc:"Un classique iconique — couverte de cristaux blancs éblouissants, arômes boisés et épicés.",
+    tags:['Hybride','Cristaux','Boisé'],price:'9,50 €',
+    info:{Culture:'Indoor LED',Arômes:'Bois · Épices · Résine',Profil:'Hybride équilibré'},
+    modDesc:"La White Widow est une légende — ses fleurs recouvertes d'une couche de trichomes cristallins lui donnent son aspect givré caractéristique."},
+  // Northern Lights → Indica dense et compacte, vert foncé
+  {cat:'fleur',name:'Northern Lights',flag:'top',flagTxt:'Top Shelf',
+    img:'https://images.pexels.com/photos/2753946/pexels-photo-2753946.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#0d1b2a,#1b4332)',
+    desc:"Incontournable Indica aux arômes doux de bois et de pin. Corps dense et très résineux.",
+    tags:['Indica pure','Dense','Boisé'],price:'9,00 €',
+    info:{Culture:'Indoor LED',Arômes:'Pin · Bois · Terre',Profil:'Indica pure'},
+    modDesc:"La Northern Lights est l'une des variétés Indica les plus emblématiques. Fleurs denses et compactes aux arômes de bois et pin."},
+  // Amnesia Haze → Sativa longue, résine dorée, vert clair
+  {cat:'fleur',name:'Amnesia Haze',flag:'bio',flagTxt:'Bio',
+    img:'https://images.pexels.com/photos/5581840/pexels-photo-5581840.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#3d6b4f,#c9a84c)',
+    desc:"Arômes citronnés et épicés caractéristiques. Fleurs longues enrobées de résine dorée.",
+    tags:['Sativa','Citronné','Épicé'],price:'8,00 €',priceOld:'10,00 €',
+    info:{Culture:'Indoor Bio',Arômes:'Citron · Épices · Herbe',Profil:'Sativa pure'},
+    modDesc:"L'Amnesia Haze est une Sativa d'exception aux arômes puissamment citronnés et épicés, cultivée en Bio sans pesticide."},
+  // Blueberry → teintes bleu-violet, givré, look myrtille
+  {cat:'fleur',name:'Blueberry',
+    img:'https://images.pexels.com/photos/36874632/pexels-photo-36874632.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#1e2c5c,#4a4ab8)',
+    desc:"Saveurs intenses de myrtilles fraîches, look givré aux reflets bleu-violet saisissants.",
+    tags:['Indica','Fruité','Givré'],price:'7,50 €',
+    info:{Culture:'Indoor LED',Arômes:'Myrtille · Baies · Vanille',Profil:'Indica dominante'},
+    modDesc:"La Blueberry est une Indica classique aux saveurs inimitables de myrtilles fraîches et de baies sucrées."},
+  // Sour Diesel → Sativa vert vif, longue et aérée
+  {cat:'fleur',name:'Sour Diesel',
+    img:'https://images.pexels.com/photos/13091409/pexels-photo-13091409.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#606c38,#bfd370)',
+    desc:"Notes diesel et agrumes explosives. Parfum puissant et reconnaissable, Sativa de référence.",
+    tags:['Sativa','Diesel','Agrumes'],price:'8,80 €',
+    info:{Culture:'Indoor LED',Arômes:'Diesel · Citrus · Herbe',Profil:'Sativa dominante'},
+    modDesc:"La Sour Diesel est une Sativa légendaire aux arômes puissants de diesel, d'agrumes acidulés et d'herbe fraîche."},
+  // Gorilla Glue #4 → macro trichomes extrême, résine collante
+  {cat:'fleur',name:'Gorilla Glue #4',
+    img:'https://images.pexels.com/photos/30682042/pexels-photo-30682042.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#3b1f0e,#8a5a2f)',
+    desc:"Arômes complexes de chocolat, café et diesel. Trichomes phénoménalement abondants.",
+    tags:['Hybride','Chocolat','Puissant'],price:'10,00 €',
+    info:{Culture:'Indoor',Arômes:'Chocolat · Café · Diesel',Profil:'Hybride puissant'},
+    modDesc:"La Gorilla Glue #4 doit son nom à la résine phénoménale qu'elle produit. Arômes de chocolat noir, café torréfié et diesel."},
+  // Gelato 41 → coloré, reflets violets/pourpres, très givrée
+  {cat:'fleur',name:'Gelato 41',flag:'new',flagTxt:'Nouveau',
+    img:'https://images.pexels.com/photos/36874669/pexels-photo-36874669.jpeg?auto=compress&cs=tinysrgb&w=640',
+    bg:'linear-gradient(135deg,#e07a8a,#f8c6ad)',
+    desc:"Notes dessert — crème glacée, fruits rouges et lavande. Fleurs généreuses et givrées.",
+    tags:['Hybride','Sucré','Crémeux'],price:'10,50 €',
+    info:{Culture:'Indoor LED Premium',Arômes:'Crème · Fruits rouges · Lavande',Profil:'Hybride équilibré'},
+    modDesc:"La Gelato 41 est une variété de prestige aux arômes de dessert — crème glacée, fruits rouges mûrs et fleurs de lavande."},
+  // ═══ POLLEN (4) ═══
+  // Marocain → kief doré dans grinder
+  {cat:'pollen',name:'Pollen Marocain',flag:'top',flagTxt:'Top',
+    img:'img/pollen-marocain.jpg',
+    bg:'linear-gradient(135deg,#f5e6c8,#e8c880)',
+    desc:"Pollen artisanal pressé à froid, texture souple. Arômes chauds d'épices et de bois du Maghreb.",
+    tags:['Artisanal','Épicé','Souple'],price:'6,00 €',
+    info:{Type:'Pollen pressé à froid',Arômes:'Épices · Cèdre · Terre',Texture:'Souple et malléable'},
+    modDesc:"Pollen artisanal d'exception pressé à froid selon les techniques traditionnelles du Maghreb. Arômes profonds d'épices, de cèdre et de terre chaude."},
+  // Afghan → cubes de hash brun foncé
+  {cat:'pollen',name:'Pollen Afghan',flag:'top',flagTxt:'Premium',
+    img:'img/pollen-afghan.jpg',
+    bg:'linear-gradient(135deg,#c8b8a0,#9e8870)',
+    desc:"Pollen noir traditionnel afghan, texture grasse, arômes intenses d'encens et de musc oriental.",
+    tags:['Traditionnel','Encens','Intense'],price:'8,00 €',
+    info:{Type:'Pollen Afghan',Arômes:'Encens · Musc · Épices',Texture:'Noir et grasse'},
+    modDesc:"Le Pollen Afghan est travaillé à la main selon la tradition ancestrale. Sa couleur noire intense et sa texture grasse révèlent des arômes profonds et orientaux."},
+  // Pakistanais → kief/pollen brun-vert dans grinder
+  {cat:'pollen',name:'Pollen Pakistanais',flag:'new',flagTxt:'Nouveau',
+    img:'img/pollen-pakistanais.jpg',
+    bg:'linear-gradient(135deg,#e8cbb0,#d4a880)',
+    desc:"Pollen brun-rouge traditionnel des montagnes pakistanaises. Notes boisées et chaudes.",
+    tags:['Montagnard','Boisé','Authentique'],price:'7,50 €',
+    info:{Type:'Pollen Pakistanais',Arômes:'Bois · Cuir · Cardamome',Texture:'Ferme et brillante'},
+    modDesc:"Pollen traditionnel des montagnes pakistanaises, travaillé manuellement. Sa texture ferme et brillante et ses notes boisées en font un produit d'exception."},
+  // Charas → boule de hash sombre dans sachet
+  {cat:'pollen',name:'Charas',flag:'bio',flagTxt:'Artisanal',
+    img:'img/charas.jpg',
+    bg:'linear-gradient(135deg,#d4c0a0,#b09070)',
+    desc:"Charas indien roulé à la main. Onctueux, fondant, arômes profonds de musc et de terre humide.",
+    tags:['Roulé main','Indien','Onctueux'],price:'9,00 €',
+    info:{Type:'Charas roulé à la main',Arômes:'Musc · Terre humide · Bois',Texture:'Onctueuse et fondante'},
+    modDesc:"Le Charas est récolté et roulé entièrement à la main dans les montagnes de l'Himalaya. Sa texture onctueuse et fondante en fait l'un des plus rares pollens artisanaux au monde."},
+
+  // ═══ COMPRIMÉS (4) ═══
+  {cat:'comprime',name:'Comprimé 400 mg MONCLER',flag:'top',flagTxt:'Bleu',
+    img:pillImg('#3b82f6','#1e3a8a'),
+    bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)',
+    desc:"Comprimé bleu 400 mg — MONCLER (fais la fete charo!!)",
+    tags:['400 mg','Bleu','Diffusion lente'],price:'7,00 €',
+    info:{Format:'Comprimé 400 mg',Couleur:'Bleu',Diffusion:'Progressive'},
+    modDesc:"Comprimé bleu de 400 mg moncler à diffusion progressive."},
+  {cat:'comprime',name:'Comprimé 400 mg CHUPA',flag:'new',flagTxt:'Rose',
+    img:pillImg('#f472b6','#9d174d'),
+    bg:'linear-gradient(135deg,#fce7f3,#fbcfe8)',
+    desc:"Comprimé rose 400 mg — CHUPA (FAiTES L'amour!!)",
+    tags:['400 mg','Rose','Standard'],price:'7,00 €',
+    info:{Format:'Comprimé 400 mg',Couleur:'Rose',Diffusion:'Standard'},
+    modDesc:"Comprimé rose de 400 mg CHUPA formule classique POUR VOUS SAUTER EN L'AIR!!"},
+  {cat:'comprime',name:'Comprimé 300 mg',
+    img:pillImg('#a855f7','#581c87'),
+    bg:'linear-gradient(135deg,#f3e8ff,#e9d5ff)',
+    desc:"Comprimé violet 300 mg — version intermédiaire. Compromis idéal entre douceur et efficacité.",
+    tags:['300 mg','Violet','Intermédiaire'],price:'5,00 €',
+    info:{Format:'Comprimé 300 mg',Couleur:'Violet',Diffusion:'Intermédiaire'},
+    modDesc:"Comprimé violet de 300 mg, dosage intermédiaire. Compromis idéal entre douceur d'effet et efficacité ressentie."},
+  {cat:'comprime',name:'Comprimé 200 mg',flag:'promo',flagTxt:'Promo',
+    img:pillImg('#fb923c','#9a3412'),
+    bg:'linear-gradient(135deg,#ffedd5,#fed7aa)',
+    desc:"Comprimé orange 200 mg — petit dosage pour débutants ou utilisation ponctuelle. Prix doux.",
+    tags:['200 mg','Orange','Débutant'],price:'4,00 €',
+    info:{Format:'Comprimé 200 mg',Couleur:'Orange',Diffusion:'Douce'},
+    modDesc:"Comprimé orange de 200 mg, dosage léger idéal pour les débutants ou pour une utilisation ponctuelle. Prix accessible."},
+
+  // Écailles —poudre fine, 50 €/g
+  {cat:'ecaille',name:'Écaille Blanche ZIP',flag:'top',flagTxt:'Premium',
+    img:'img/ecaille-blanche.jpg',
+    bg:'linear-gradient(135deg,#f5f5f5,#e8e8e8)',
+    desc:"poudre fine blanche, ultra-pure ZIP.",
+    tags:['Pur'],price:'50,00 €',
+    info:{Type:'ECAILLES',Forme:'Poudre fine blanche',Dosage:'minimum 1g/commande'},
+    modDesc:"Écaille Blanche en poudre fine ultra-pure."},
+  {cat:'ecaille',name:'Écaille Rose 2CP',flag:'new',flagTxt:'nouveau',
+    img:'img/ecaille-rose.jpg',
+    bg:'linear-gradient(135deg,#f8d7d0,#e8b8b0)',
+    desc:"poudre fine rose, 2CP.",
+    tags:['pure'],price:'60,00 €',
+    info:{Type:'ECAILLES',Forme:'Poudre fine rose',Dosage:'minimum 1g/commande'},
+    modDesc:"Écaille Rose haut de gamme 2CP SYNT"},
+  {cat:'ecaille',name:'Molly',flag:'new',flagTxt:'Nouveau',
+    img:'img/mol.jpg',
+    bg:'linear-gradient(135deg,#e8f4f8,#c8e8f0)',
+    desc:"molly cristallisé",
+    tags:['Cristal'],price:'30,00 €',
+    info:{Type:'ECAILLES',Forme:'Cristal transparent',Dosage:'minimum 1g/commande'},
+    modDesc:"Molly cristallisé —haute pureté."},
+  {cat:'ecaille',name:'3MMC',flag:'new',flagTxt:'Nouveau',
+    img:'img/ecaille-blanche.jpg',
+    bg:'linear-gradient(135deg,#ffffff,#e8f0ff,#ccdeff)',
+    desc:"3MMC SYNT",
+    tags:['Brillant','Pur',],price:'30,00 €',
+    info:{Type:'ECAILLES',Forme:'Poudre blanche brillante',Dosage:'minimum 1g/commande'},
+    modDesc:"Poudre Blanche 3 — plus brillante que la première poudre blanche. Éclat cristallin exceptionnel, ultra-pure."},
+  {cat:'ecaille',name:'ketamine',flag:'top',flagTxt:'NOUVEAU',
+    img:hotPowderImg(),
+    bg:'linear-gradient(135deg,#1a1a2e,#2d2d4a)',
+    desc:" ketamine scintillante",
+    tags:['Scintillant','Premium'],price:'30,00 €',
+    info:{Type:'ECAILLES',Forme:'Poudre blanche brillante',Dosage:'minimum 1g/commande'},
+    modDesc:"Hot — poudre blanche scintillante d'une brillance exceptionnelle. Éclat cristallin unique, ultra-pure."},
+
+  // ═══ PSY (1) ═══
+  {cat:'psy',name:'Magic Bars',flag:'new',flagTxt:'Nouveau',
+    img:chocoBarImg(),
+    bg:'linear-gradient(135deg,#4a0080,#200040)',
+    desc:"Barre de chocolat aux 6 carrés — expérience unique et intense.",
+    tags:['Chocolat','Premium','Unique'],price:'10,00 €',
+    info:{Type:'Psy',Forme:'Barre chocolat 6 carrés',Dosage:'1 barre / unité'},
+    modDesc:"Magic Bars — barre de chocolat artisanale composée de 6 carrés soigneusement dosés. Une expérience unique et intense."},
+];
+
+const CATS=[{k:'all',l:'Tout'},{k:'fleur',l:'Fleurs'},{k:'pollen',l:'Pollen'},{k:'comprime',l:'Comprimés'},{k:'ecaille',l:'Écailles'},{k:'psy',l:'Psy'}];
+const NAMES=PRODUCTS.map(p=>p.name);
+const flagClass={new:'f-new',top:'f-top',bio:'f-bio',promo:'f-promo'};
+const typeClass={fleur:'t-indoor',pollen:'t-resine',comprime:'t-moonrock',ecaille:'t-ecaille',psy:'t-psy'};
+const typeLabel={fleur:'Fleur',pollen:'Pollen',comprime:'Comprimé',ecaille:'Écaille',psy:'Psy'};
+
+// Marquee
+const mq=document.getElementById('mq');
+const mqContent=[...NAMES,...NAMES].map(n=>`<span>${n}</span>`).join('');
+mq.innerHTML=mqContent;
+
+// Filters
+const fb=document.getElementById('filters');
+CATS.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='fb'+(c.k==='all'?' on':'');
+  b.textContent=c.l;
+  b.onclick=()=>{document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(c.k)};
+  fb.appendChild(b);
+});
+
+function buildCard(p){
+  const div=document.createElement('div');
+  div.className='card';
+  div.onclick=()=>openMod(p);
+  div.innerHTML=`
+    <div class="img-wrap${p.cat==='comprime'?' pill':''}" style="background:${p.bg||'#ddd'}">
+      <span class="type-badge ${typeClass[p.cat]}">${typeLabel[p.cat]}</span>
+      ${p.flag?`<span class="flag ${flagClass[p.flag]}">${p.flagTxt}</span>`:''}
+      <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.pexels.com/photos/30682041/pexels-photo-30682041.jpeg?auto=compress&cs=tinysrgb&w=640'"/>
+      <div class="ov"><button>Voir la fiche</button></div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">${p.name}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-tags">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+    <div class="card-foot">
+      <div>
+        <span class="price">${p.price}${(p.cat==='comprime'||p.cat==='psy')?'':' <span>/ g</span>'}</span>
+        ${p.priceOld?`<span class="price-old">${p.priceOld}</span>`:''}
+      </div>
+      <button class="btn-detail">Consulter</button>
+    </div>`;
+  return div;
+}
+
+function renderGrid(cat){
+  const g=document.getElementById('grid');
+  g.innerHTML='';
+  PRODUCTS.filter(p=>cat==='all'||p.cat===cat).forEach(p=>g.appendChild(buildCard(p)));
+}
+
+function openMod(p){
+  document.getElementById('mimg').src=p.img;
+  document.getElementById('mtype').textContent=typeLabel[p.cat];
+  document.getElementById('mname').textContent=p.name;
+  document.getElementById('mdesc').textContent=p.modDesc;
+  document.getElementById('mgrid').innerHTML=Object.entries(p.info).map(([k,v])=>`<div class="mi"><div class="mi-l">${k}</div><div class="mi-v">${v}</div></div>`).join('')+`<div class="mi"><div class="mi-l">Prix au gramme</div><div class="mi-v">${p.price}</div></div>`;
+  document.getElementById('mbg').classList.add('open');
+}
+
+function closeMod(e){if(e.target===document.getElementById('mbg'))document.getElementById('mbg').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('mbg').classList.remove('open')});
+
+renderGrid('all');
+</script>
+</body>
+</html>
