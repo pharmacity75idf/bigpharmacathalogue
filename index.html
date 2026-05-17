@@ -7,7 +7,28 @@
 <style>
 :root{--navy:#002855;--navy2:#003f88;--green:#ff6b1a;--green2:#ff9a3c;--gold:#00b4d8;--gold2:#48cae4;--cream:#fff7ed;--muted:#5a6478;--r:14px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--cream);color:#1a1a2e}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--cream);color:#1a1a2e;overflow-x:hidden}
+
+/* SCROLL PROGRESS BAR */
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold2),#a855f7);z-index:9999;width:0%;transition:width .1s linear;border-radius:0 3px 3px 0;box-shadow:0 0 10px rgba(255,107,26,.6)}
+
+/* BACK TO TOP */
+#back-top{position:fixed;bottom:24px;left:24px;width:46px;height:46px;border-radius:50%;background:var(--navy);border:none;color:#fff;font-size:1.2rem;cursor:pointer;z-index:500;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,40,85,.4);opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;pointer-events:none}
+#back-top.visible{opacity:1;transform:translateY(0);pointer-events:all}
+#back-top:hover{background:var(--navy2);transform:translateY(-3px)}
+
+/* TOAST */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:.7rem 1.5rem;border-radius:99px;font-size:.85rem;font-weight:600;z-index:9000;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SEARCH */
+.search-wrap{max-width:1380px;margin:0 auto;padding:0 2rem 0;display:flex;justify-content:center}
+.search-box{position:relative;width:100%;max-width:500px;margin-top:1.4rem}
+.search-box input{width:100%;padding:.7rem 1.1rem .7rem 2.8rem;border:2px solid #e0e8f0;border-radius:99px;font-size:.88rem;outline:none;background:#fff;color:#1a1a2e;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.search-box input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(0,180,216,.12)}
+.search-box .s-ico{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;opacity:.5}
+.search-clear{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;opacity:.4;display:none}
+.search-clear.vis{display:block}
 
 /* NAV */
 header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.5)}
@@ -25,13 +46,18 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 
 /* HERO */
 .hero{background:linear-gradient(135deg,#001d3d 0%,#003f88 45%,#0077b6 100%);padding:6rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden}
+/* Particules flottantes hero */
+.particles{position:absolute;inset:0;pointer-events:none;z-index:0}
+.particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0}
+@keyframes floatUp{0%{transform:translateY(100%) scale(0);opacity:0}10%{opacity:.7}80%{opacity:.3}100%{transform:translateY(-120px) scale(1.2);opacity:0}}
+.hero>*:not(.particles){position:relative;z-index:1}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 30%,rgba(255,107,26,.35) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 70%,rgba(72,202,228,.25) 0%,transparent 65%),radial-gradient(circle at 50% 100%,rgba(255,154,60,.2) 0%,transparent 50%)}
 .hero-label{display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold2);font-size:.78rem;font-weight:600;padding:.38rem 1rem;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem}
 .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:1.1rem}
 .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero p{color:#8899bb;font-size:1rem;max-width:500px;margin:0 auto 2.2rem;line-height:1.7;font-weight:300}
 .hero-stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
-.stat-num{font-size:1.9rem;font-weight:900;color:#fff}.stat-num span{color:var(--gold2)}
+.stat-num span{color:var(--gold2)}
 .stat-label{font-size:.72rem;color:#7a8899;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem}
 
 /* MARQUEE */
@@ -50,11 +76,18 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .fb.on{background:var(--navy);border-color:var(--navy);color:#fff}
 
 /* GRID */
-.grid{max-width:1380px;margin:0 auto;padding:1.2rem 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.grid{max-width:1380px;margin:0 auto;padding:1.2rem 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;transition:opacity .2s}
 
 /* CARD */
-.card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;cursor:pointer;position:relative}
-.card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+.card{background:#fff;border-radius:var(--r);overflow:hidden;border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#ffd700,#ff6b1a,#a855f7,#00b4d8,#ffd700) border-box;box-shadow:0 2px 12px rgba(255,215,0,.18),0 4px 16px rgba(0,0,0,.07);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,opacity .4s;display:flex;flex-direction:column;cursor:pointer;position:relative;opacity:0;transform:translateY(28px)}
+.card.visible{opacity:1;transform:translateY(0)}
+.card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 0 0 3px rgba(255,215,0,.5),0 18px 48px rgba(255,107,26,.25)}
+/* Ripple */
+.ripple{position:absolute;border-radius:50%;background:rgba(0,180,216,.25);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+/* No results */
+.no-results{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--muted);font-size:1rem}
+.no-results span{font-size:2.5rem;display:block;margin-bottom:.8rem}
 .card:hover .ov{opacity:1}
 .img-wrap{position:relative;height:200px;overflow:hidden;flex-shrink:0}
 .img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
@@ -84,11 +117,25 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .btn-detail{background:transparent;border:1.5px solid var(--green);color:var(--green);border-radius:8px;padding:.48rem 1rem;font-size:.79rem;font-weight:700;cursor:pointer;transition:all .2s}
 .btn-detail:hover{background:var(--green);color:#fff}
 
+/* STATS animées */
+.stat-num{font-size:1.9rem;font-weight:900;color:#fff;transition:transform .3s}
+.hero-stats .stat:hover .stat-num{transform:scale(1.15)}
+
+/* FILTER count badge */
+.fb-count{background:rgba(255,255,255,.22);border-radius:99px;font-size:.68rem;padding:.1rem .45rem;margin-left:.3rem;font-weight:700}
+.fb.on .fb-count{background:rgba(255,255,255,.3)}
+
 /* MODAL */
-.modal-bg{display:none;position:fixed;inset:0;z-index:1000;background:rgba(5,12,28,.72);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
+.modal-bg{display:none;position:fixed;inset:0;z-index:1000;background:rgba(5,12,28,.72);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem}
 .modal-bg.open{display:flex}
-.modal{background:#fff;border-radius:18px;max-width:600px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:fadeUp .28s ease}
-@keyframes fadeUp{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.modal{background:#fff;border-radius:20px;max-width:600px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:fadeUp .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes fadeUp{from{transform:translateY(24px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal-img-wrap{position:relative;height:240px;overflow:hidden}
+.modal-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease}
+.modal-bg.open .modal-img-wrap img{transform:scale(1.06)}
+.modal-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,20,50,.5) 0%,transparent 60%)}
+.modal-img-title{position:absolute;bottom:1rem;left:1.4rem;color:#fff;font-size:1.6rem;font-weight:900;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.modal-price-badge{position:absolute;top:1rem;right:1rem;background:var(--navy);color:var(--gold2);font-size:1.1rem;font-weight:900;padding:.4rem .9rem;border-radius:10px;backdrop-filter:blur(4px)}
 .modal img{width:100%;height:240px;object-fit:cover}
 .modal-body{padding:1.6rem}
 .modal-type{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.4rem}
@@ -145,6 +192,9 @@ footer{background:var(--navy);padding:2.5rem 2rem}
 </style>
 </head>
 <body>
+<div id="progress-bar"></div>
+<div id="toast"></div>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <header>
   <div class="nav">
@@ -191,6 +241,7 @@ footer{background:var(--navy);padding:2.5rem 2rem}
 </header>
 
 <section class="hero">
+  <div class="particles" id="particles"></div>
   <div class="hero-label">🌿 Sélection Premium 2026</div>
   <h1>La <em>pharmacie</em> de référence</h1>
   <p>Site de consultation uniquement.</p>
@@ -205,6 +256,14 @@ footer{background:var(--navy);padding:2.5rem 2rem}
 
 <div class="marquee-wrap"><div class="marquee" id="mq"></div></div>
 
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="s-ico">🔍</span>
+    <input type="text" id="search-input" placeholder="Rechercher un produit…" autocomplete="off"/>
+    <button class="search-clear" id="search-clear">✕</button>
+  </div>
+</div>
+
 <div class="filter-bar">
   <h2>Notre catalogue</h2>
   <div class="filters" id="filters"></div>
@@ -214,13 +273,17 @@ footer{background:var(--navy);padding:2.5rem 2rem}
 
 <div class="modal-bg" id="mbg" onclick="closeMod(event)">
   <div class="modal" id="mod">
-    <img id="mimg" src="" alt=""/>
+    <div class="modal-img-wrap">
+      <img id="mimg" src="" alt=""/>
+      <div class="modal-img-overlay"></div>
+      <div class="modal-img-title" id="mname"></div>
+      <div class="modal-price-badge" id="mprice"></div>
+    </div>
     <div class="modal-body">
       <div class="modal-type" id="mtype"></div>
-      <div class="modal-name" id="mname"></div>
       <div class="modal-desc" id="mdesc"></div>
       <div class="modal-grid" id="mgrid"></div>
-      <button class="modal-close" onclick="document.getElementById('mbg').classList.remove('open')">Fermer la fiche</button>
+      <button class="modal-close" onclick="document.getElementById('mbg').classList.remove('open')">✕ Fermer la fiche</button>
     </div>
   </div>
 </div>
@@ -284,6 +347,86 @@ footer{background:var(--navy);padding:2.5rem 2rem}
 </footer>
 
 <script>
+// ── SCROLL PROGRESS BAR ──
+const progressBar = document.getElementById('progress-bar');
+const backTop = document.getElementById('back-top');
+window.addEventListener('scroll', () => {
+  const st = window.scrollY, dh = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (st / dh * 100) + '%';
+  backTop.classList.toggle('visible', st > 400);
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── PARTICLES HERO ──
+function spawnParticles() {
+  const wrap = document.getElementById('particles');
+  if (!wrap) return;
+  const colors = ['rgba(255,107,26,.7)','rgba(72,202,228,.6)','rgba(168,85,247,.5)','rgba(255,154,60,.6)','rgba(255,255,255,.4)'];
+  function make() {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 8 + 3;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;bottom:${Math.random()*30}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*4+3}s;animation-delay:${Math.random()*5}s;box-shadow:0 0 ${size*2}px currentColor`;
+    wrap.appendChild(p);
+    p.addEventListener('animationend', () => { p.remove(); make(); });
+  }
+  for (let i = 0; i < 22; i++) make();
+}
+spawnParticles();
+
+// ── COUNTER ANIMATION ──
+function animateCount(el, target) {
+  let cur = 0; const step = Math.ceil(target / 30);
+  const t = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.firstChild.textContent = cur;
+    if (cur >= target) clearInterval(t);
+  }, 40);
+}
+const statsObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.stat-num').forEach(el => {
+        const val = parseInt(el.firstChild?.textContent || el.textContent);
+        if (!isNaN(val)) { el.innerHTML = `0<span style="color:var(--gold2)"></span>`; animateCount(el, val); }
+      });
+      statsObs.disconnect();
+    }
+  });
+}, {threshold: .5});
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) statsObs.observe(heroStats);
+
+// ── RIPPLE EFFECT ──
+function addRipple(btn) {
+  btn.style.position = 'relative'; btn.style.overflow = 'hidden';
+  btn.addEventListener('click', e => {
+    const r = document.createElement('span'); r.className = 'ripple';
+    const rect = btn.getBoundingClientRect();
+    const sz = Math.max(rect.width, rect.height);
+    r.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px`;
+    btn.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  });
+}
+
+// ── CARD ENTRANCE (Intersection Observer) ──
+const cardObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      cardObs.unobserve(e.target);
+    }
+  });
+}, {threshold: .08});
+
 // Génère un dessin SVG de comprimé (tablette) avec la couleur souhaitée
 function pillImg(color, dark){
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'><defs><radialGradient id='hl' cx='40%' cy='30%' r='70%'><stop offset='0%' stop-color='white' stop-opacity='0.7'/><stop offset='60%' stop-color='white' stop-opacity='0.1'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient><filter id='sh'><feGaussianBlur stdDeviation='4'/></filter></defs><ellipse cx='205' cy='130' rx='148' ry='62' fill='rgba(0,0,0,0.25)' filter='url(%23sh)'/><ellipse cx='200' cy='115' rx='150' ry='68' fill='${color}'/><ellipse cx='200' cy='115' rx='150' ry='68' fill='url(%23hl)'/><line x1='55' y1='115' x2='345' y2='115' stroke='${dark}' stroke-width='3' stroke-linecap='round' opacity='0.35'/></svg>`;
@@ -638,22 +781,33 @@ const typeLabel={fleur:'Fleur',pollen:'Pollen',comprime:'Comprimé',ecaille:'Éc
 
 // Marquee
 const mq=document.getElementById('mq');
-const mqContent=[...NAMES,...NAMES].map(n=>`<span>${n}</span>`).join('');
-mq.innerHTML=mqContent;
+mq.innerHTML=[...NAMES,...NAMES].map(n=>`<span>${n}</span>`).join('');
+
+// Count par catégorie
+function countCat(k){ return k==='all'?PRODUCTS.length:PRODUCTS.filter(p=>p.cat===k).length; }
 
 // Filters
+let activeCat='all';
 const fb=document.getElementById('filters');
 CATS.forEach(c=>{
   const b=document.createElement('button');
   b.className='fb'+(c.k==='all'?' on':'');
-  b.textContent=c.l;
-  b.onclick=()=>{document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(c.k)};
+  b.innerHTML=`${c.l}<span class="fb-count">${countCat(c.k)}</span>`;
+  addRipple(b);
+  b.onclick=()=>{
+    document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); activeCat=c.k;
+    document.getElementById('search-input').value='';
+    document.getElementById('search-clear').classList.remove('vis');
+    renderGrid(c.k,'');
+  };
   fb.appendChild(b);
 });
 
 function buildCard(p){
   const div=document.createElement('div');
-  div.className='card';
+  const isPremium=p.flag==='top';
+  div.className='card'+(isPremium?' premium':'');
   div.onclick=()=>openMod(p);
   div.innerHTML=`
     <div class="img-wrap${p.cat==='comprime'?' pill':''}" style="background:${p.bg||'#ddd'}">
@@ -674,22 +828,47 @@ function buildCard(p){
       </div>
       <button class="btn-detail">Consulter</button>
     </div>`;
+  addRipple(div.querySelector('.btn-detail'));
+  cardObs.observe(div);
   return div;
 }
 
-function renderGrid(cat){
+function renderGrid(cat, query=''){
   const g=document.getElementById('grid');
+  const q=(query||'').toLowerCase().trim();
+  const list=PRODUCTS.filter(p=>(cat==='all'||p.cat===cat)&&(!q||(p.name+p.desc+(p.tags||[]).join('')).toLowerCase().includes(q)));
   g.innerHTML='';
-  PRODUCTS.filter(p=>cat==='all'||p.cat===cat).forEach(p=>g.appendChild(buildCard(p)));
+  if(!list.length){
+    g.innerHTML=`<div class="no-results"><span>🔍</span>Aucun produit trouvé pour "<strong>${query}</strong>"</div>`;
+    return;
+  }
+  list.forEach(p=>g.appendChild(buildCard(p)));
 }
+
+// Recherche
+const searchInput=document.getElementById('search-input');
+const searchClear=document.getElementById('search-clear');
+let searchTimer;
+searchInput.addEventListener('input',()=>{
+  const q=searchInput.value;
+  searchClear.classList.toggle('vis',q.length>0);
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>renderGrid(activeCat,q),220);
+});
+searchClear.addEventListener('click',()=>{
+  searchInput.value=''; searchClear.classList.remove('vis');
+  renderGrid(activeCat,'');
+});
 
 function openMod(p){
   document.getElementById('mimg').src=p.img;
   document.getElementById('mtype').textContent=typeLabel[p.cat];
   document.getElementById('mname').textContent=p.name;
+  document.getElementById('mprice').textContent=p.price;
   document.getElementById('mdesc').textContent=p.modDesc;
-  document.getElementById('mgrid').innerHTML=Object.entries(p.info).map(([k,v])=>`<div class="mi"><div class="mi-l">${k}</div><div class="mi-v">${v}</div></div>`).join('')+`<div class="mi"><div class="mi-l">Prix au gramme</div><div class="mi-v">${p.price}</div></div>`;
+  document.getElementById('mgrid').innerHTML=Object.entries(p.info).map(([k,v])=>`<div class="mi"><div class="mi-l">${k}</div><div class="mi-v">${v}</div></div>`).join('');
   document.getElementById('mbg').classList.add('open');
+  showToast(`📋 Fiche ouverte — ${p.name}`);
 }
 
 function closeMod(e){if(e.target===document.getElementById('mbg'))document.getElementById('mbg').classList.remove('open')}
